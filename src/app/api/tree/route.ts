@@ -29,6 +29,7 @@ export async function GET(req: NextRequest) {
   const fontSize = parseInt(searchParams.get("fontSize") || "14");
   const lineHeight = parseInt(searchParams.get("lineHeight") || "20");
   const padding = parseInt(searchParams.get("padding") || "10");
+  const branch = searchParams.get("branch") || "main";
 
   if (!repo || !username) {
     return NextResponse.json(
@@ -44,7 +45,7 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  const GITHUB_API = `https://api.github.com/repos/${username}/${repo}/git/trees/main?recursive=1`;
+  const GITHUB_API = `https://api.github.com/repos/${username}/${repo}/git/trees/${branch}?recursive=1`;
 
   try {
     const response = await axios.get(GITHUB_API);
@@ -83,13 +84,17 @@ export async function GET(req: NextRequest) {
       svg = `
       <svg xmlns="http://www.w3.org/2000/svg" width="400" height="${badgeHeight}" viewBox="0 0 400 ${badgeHeight}" style="background-color: ${bgColor}; border-radius: 8px;">
         <rect width="400" height="${badgeHeight}" rx="8" fill="${bgColor}" stroke="${borderColor}" stroke-width="2"/>
-        <text x="20" y="${padding + lineHeight}" font-size="${fontSize}" fill="${txtColor}" font-family="monospace" font-weight="bold">
+        <text x="20" y="${
+          padding + lineHeight
+        }" font-size="${fontSize}" fill="${txtColor}" font-family="monospace" font-weight="bold">
           📂 ${repo}
         </text>
         ${directories
           .map(
             (line, index) => `
-          <text x="20" y="${padding + lineHeight * (index + 2)}" font-size="${fontSize}" fill="${txtColor}" font-family="monospace">
+          <text x="20" y="${
+            padding + lineHeight * (index + 2)
+          }" font-size="${fontSize}" fill="${txtColor}" font-family="monospace">
             ${line}
           </text>
         `
