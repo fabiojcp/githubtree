@@ -26,6 +26,9 @@ export async function GET(req: NextRequest) {
   const txtColor = searchParams.get("txtColor") || "#F2F2F2";
   const borderColor = searchParams.get("borderColor") || "#121111";
   const view = searchParams.get("view") || "file"; // 'folder' | 'file'
+  const fontSize = parseInt(searchParams.get("fontSize") || "14");
+  const lineHeight = parseInt(searchParams.get("lineHeight") || "20");
+  const padding = parseInt(searchParams.get("padding") || "10");
 
   if (!repo || !username) {
     return NextResponse.json(
@@ -72,29 +75,21 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const fontSize = 14;
-    const lineHeight = 20;
-    const padding = 10;
-    const badgeWidth = 400;
     let badgeHeight = (directories.length + 1) * lineHeight + padding * 2;
 
     let svg = "";
 
     if (view === "folder") {
       svg = `
-      <svg xmlns="http://www.w3.org/2000/svg" width="${badgeWidth}" height="${badgeHeight}" viewBox="0 0 ${badgeWidth} ${badgeHeight}" style="background-color: ${bgColor}; border-radius: 8px;">
-        <rect width="${badgeWidth}" height="${badgeHeight}" rx="8" fill="${bgColor}" stroke="${borderColor}" stroke-width="2"/>
-        <text x="20" y="${
-          padding + lineHeight
-        }" font-size="${fontSize}" fill="${txtColor}" font-family="monospace" font-weight="bold">
+      <svg xmlns="http://www.w3.org/2000/svg" width="400" height="${badgeHeight}" viewBox="0 0 400 ${badgeHeight}" style="background-color: ${bgColor}; border-radius: 8px;">
+        <rect width="400" height="${badgeHeight}" rx="8" fill="${bgColor}" stroke="${borderColor}" stroke-width="2"/>
+        <text x="20" y="${padding + lineHeight}" font-size="${fontSize}" fill="${txtColor}" font-family="monospace" font-weight="bold">
           📂 ${repo}
         </text>
         ${directories
           .map(
             (line, index) => `
-          <text x="20" y="${
-            padding + lineHeight * (index + 2)
-          }" font-size="${fontSize}" fill="${txtColor}" font-family="monospace">
+          <text x="20" y="${padding + lineHeight * (index + 2)}" font-size="${fontSize}" fill="${txtColor}" font-family="monospace">
             ${line}
           </text>
         `
@@ -113,6 +108,7 @@ export async function GET(req: NextRequest) {
         if (!folderContents[folder]) folderContents[folder] = [];
         folderContents[folder].push(parts[parts.length - 1]);
       });
+
       const totalLines = Object.keys(folderContents).reduce(
         (acc, folder) => acc + folderContents[folder].length + 1,
         1
@@ -121,8 +117,8 @@ export async function GET(req: NextRequest) {
 
       let yPosition = padding + lineHeight;
       svg = `
-      <svg xmlns="http://www.w3.org/2000/svg" width="${badgeWidth}" height="${badgeHeight}" viewBox="0 0 ${badgeWidth} ${badgeHeight}" style="background-color: ${bgColor}; border-radius: 8px;">
-        <rect width="${badgeWidth}" height="${badgeHeight}" rx="8" fill="${bgColor}" stroke="${borderColor}" stroke-width="2"/>
+      <svg xmlns="http://www.w3.org/2000/svg" width="400" height="${badgeHeight}" viewBox="0 0 400 ${badgeHeight}" style="background-color: ${bgColor}; border-radius: 8px;">
+        <rect width="400" height="${badgeHeight}" rx="8" fill="${bgColor}" stroke="${borderColor}" stroke-width="2"/>
         <text x="20" y="${yPosition}" font-size="${fontSize}" fill="${txtColor}" font-family="monospace" font-weight="bold">
           📁 ${repo}
         </text>
