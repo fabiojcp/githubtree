@@ -25,21 +25,18 @@ export async function GET(req: NextRequest) {
   const bgColor = searchParams.get("bgColor") || "#393359";
   const txtColor = searchParams.get("txtColor") || "#F2F2F2";
   const borderColor = searchParams.get("borderColor") || "#121111";
-  const view = searchParams.get("view") || "file"; // folders | files
-  console.log(view);
+  const view = searchParams.get("view") || "file"; // 'folder' | 'file'
 
   if (!repo || !username) {
     return NextResponse.json(
-      { error: "O parâmetro 'repo' é obrigatório." },
+      { error: "Os parâmetros 'repo' e 'user' são obrigatórios." },
       { status: 400 }
     );
   }
 
   if (view !== "folder" && view !== "file") {
     return NextResponse.json(
-      {
-        error: "O parâmetro 'view' deve ser 'folders' ou 'files'.",
-      },
+      { error: "O parâmetro 'view' deve ser 'folder' ou 'file'." },
       { status: 400 }
     );
   }
@@ -56,22 +53,17 @@ export async function GET(req: NextRequest) {
         { status: 500 }
       );
     }
-    let foldersPath: string[] = [];
+
     let directories = tree
       .filter((item) =>
         view === "file" ? item.type === "blob" : item.type === "tree"
       )
       .map((item) => item.path);
 
-    if (view === "file") {
-      foldersPath = tree
-        .filter((item) => item.type === "tree")
-        .map((item) => item.path);
-    }
-
     if (folders && folders.length > 0) {
-      console.log(folders);
-      directories = directories.filter((dir) => folders.includes(dir));
+      directories = directories.filter((dir) =>
+        folders.some((folder) => dir.startsWith(folder))
+      );
     }
 
     if (exclude.length > 0) {
@@ -84,9 +76,10 @@ export async function GET(req: NextRequest) {
     const lineHeight = 20;
     const padding = 10;
     const badgeWidth = 400;
-    const badgeHeight = (directories.length + 1) * lineHeight + padding * 2;
+    let badgeHeight = (directories.length + 1) * lineHeight + padding * 2;
 
     let svg = "";
+
     if (view === "folder") {
       svg = `
       <svg xmlns="http://www.w3.org/2000/svg" width="${badgeWidth}" height="${badgeHeight}" viewBox="0 0 ${badgeWidth} ${badgeHeight}" style="background-color: ${bgColor}; border-radius: 8px;">
@@ -112,7 +105,50 @@ export async function GET(req: NextRequest) {
     }
 
     if (view === "file") {
+      const folderContents: Record<string, string[]> = {};
 
+      directories.forEach((file) => {
+        const parts = file.split("/");
+        const folder = parts.length > 1 ? parts.slice(0, -1).join("/") : "/";
+        if (!folderContents[folder]) folderContents[folder] = [];
+        folderContents[folder].push(parts[parts.length - 1]);
+      });
+      const totalLines = Object.keys(folderContents).reduce(
+        (acc, folder) => acc + folderContents[folder].length + 1,
+        1
+      );
+      badgeHeight = totalLines * lineHeight + padding * 2;
+
+      let yPosition = padding + lineHeight;
+      svg = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="${badgeWidth}" height="${badgeHeight}" viewBox="0 0 ${badgeWidth} ${badgeHeight}" style="background-color: ${bgColor}; border-radius: 8px;">
+        <rect width="${badgeWidth}" height="${badgeHeight}" rx="8" fill="${bgColor}" stroke="${borderColor}" stroke-width="2"/>
+        <text x="20" y="${yPosition}" font-size="${fontSize}" fill="${txtColor}" font-family="monospace" font-weight="bold">
+          📁 ${repo}
+        </text>
+      `;
+
+      yPosition += lineHeight;
+
+      Object.entries(folderContents).forEach(([folder, files]) => {
+        svg += `
+        <text x="20" y="${yPosition}" font-size="${fontSize}" fill="${txtColor}" font-family="monospace" font-weight="bold">
+          📂 ${folder}
+        </text>
+        `;
+        yPosition += lineHeight;
+
+        files.forEach((file) => {
+          svg += `
+          <text x="40" y="${yPosition}" font-size="${fontSize}" fill="${txtColor}" font-family="monospace">
+            📄 ${file}
+          </text>
+          `;
+          yPosition += lineHeight;
+        });
+      });
+
+      svg += `</svg>`;
     }
 
     return new NextResponse(svg, {
