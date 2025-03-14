@@ -18,29 +18,46 @@ interface Tree {
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const repo = searchParams.get("repo");
   const username = searchParams.get("user");
-  const folders: string[] | null = searchParams.getAll("folders");
-  const exclude: string[] | null = searchParams.getAll("exclude");
+  const repo = searchParams.get("repo");
+  const branch = searchParams.get("branch") || "main";
+  const view = searchParams.get("view") || "file"; // 'folder' | 'file'
   const bgColor = searchParams.get("bgColor") || "#393359";
   const txtColor = searchParams.get("txtColor") || "#F2F2F2";
   const borderColor = searchParams.get("borderColor") || "#121111";
-  const view = searchParams.get("view") || "file"; // 'folder' | 'file'
   const fontSize = parseInt(searchParams.get("fontSize") || "14");
   const lineHeight = parseInt(searchParams.get("lineHeight") || "20");
   const padding = parseInt(searchParams.get("padding") || "10");
-  const branch = searchParams.get("branch") || "main";
 
-  if (!repo || !username) {
+  const foldersParam: string[] | null = searchParams.getAll("folders");
+  const excludeParam: string[] | null = searchParams.getAll("exclude");
+
+  const folders =
+    foldersParam && foldersParam.length && Array.isArray(foldersParam)
+      ? foldersParam.filter((f) => f.trim() !== "")
+      : [];
+  const exclude =
+    excludeParam && excludeParam.length && Array.isArray(excludeParam)
+      ? excludeParam.filter((e) => e.trim() !== "")
+      : [];
+
+  if (!username) {
     return NextResponse.json(
-      { error: "Os parâmetros 'repo' e 'user' são obrigatórios." },
+      { error: "missing 'username' param" },
+      { status: 400 }
+    );
+  }
+
+  if (!repo) {
+    return NextResponse.json(
+      { error: "missing 'repo' param" },
       { status: 400 }
     );
   }
 
   if (view !== "folder" && view !== "file") {
     return NextResponse.json(
-      { error: "O parâmetro 'view' deve ser 'folder' ou 'file'." },
+      { error: "The 'view' parameter must be 'folder' or 'file'." },
       { status: 400 }
     );
   }
@@ -53,7 +70,7 @@ export async function GET(req: NextRequest) {
 
     if (!tree || !Array.isArray(tree) || tree?.length === 0) {
       return NextResponse.json(
-        { error: "Erro ao buscar o repositório." },
+        { error: "Github API request Error" },
         { status: 500 }
       );
     }
@@ -70,7 +87,7 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    if (exclude.length > 0) {
+    if (exclude && exclude.length > 0) {
       directories = directories.filter(
         (dir) => !exclude.some((excl) => dir.startsWith(excl))
       );
