@@ -59,8 +59,8 @@ export default function Home() {
         </h1>
         <p className="text-gray-700 text-center max-w-lg mb-6">
           This project was created to simplify the visualization of GitHub
-          repository structures. With it, you can generate a **dynamic SVG**
-          that clearly and neatly displays the repository's folders and files.
+          repository structures. With it, you can generate a dynamic SVG that
+          clearly and neatly displays the repository's folders and files.
         </p>
 
         <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
@@ -215,7 +215,7 @@ export default function Home() {
         </div>
       </div>
 
-      <footer className="flex flex-col justify-center items-center h-16 bg-white text-black">
+      <footer className="flex flex-col justify-center items-center h-16 bg-white text-black pt-4">
         Made By&nbsp;
         <a
           href="https://github.com/fabiojcp"
@@ -225,7 +225,7 @@ export default function Home() {
           <svg
             stroke="currentColor"
             fill="currentColor"
-            stroke-width="0"
+            strokeWidth="0"
             viewBox="0 0 496 512"
             height="20px"
             width="20px"
