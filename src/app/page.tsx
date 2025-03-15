@@ -49,10 +49,6 @@ export default function Home() {
         <h1 className="text-3xl font-bold text-gray-800 mb-4 flex gap-2 items-center">
           📂 GitHub Repository Tree Generator
           <img
-            alt="Hits"
-            src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fwoochanleee.github.io%2Fproject-tree-generator&amp;count_bg=%2379C83D&amp;title_bg=%23555555&amp;icon=&amp;icon_color=%23E7E7E7&amp;title=hits&amp;edge_flat=false"
-          ></img>
-          <img
             alt="stars"
             src="https://img.shields.io/github/stars/fabiojcp/githubtree?logo=Github"
           ></img>

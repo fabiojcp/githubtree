@@ -1,36 +1,29 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# GitHub Repository Tree Generator
 
-## Getting Started
+**Easily generate an SVG-based tree of any GitHub repository.**  
+Extract and format directory structures to provide structured context for LLMs, documentation, and sharing.
 
-First, run the development server:
+## 🔹 Features
+- Generate a **visual representation** of any GitHub repository structure.
+- Supports **folders and files view**.
+- **Customizable** colors, font size, line height, and padding.
+- Use the **SVG link in Markdown `img` tags** directly.
+- Ideal for **AI model training**, **documentation**, and **project overviews**.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 📂 Repository Structure
+This project's directory structure, generated with **GitHub Repository Tree Generator**:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+https://githubtree.vercel.app/api/tree?user=YOUR_GITHUB_USERNAME&repo=YOUR_REPO_NAME&branch=main&view=file&bgColor=%23393359&txtColor=%23F2F2F2&borderColor=%23121111&fontSize=14&lineHeight=20&padding=10
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+<img src='https://githubtree.vercel.app/api/tree?user=fabiojcp&repo=githubtree&branch=main&view=file&bgColor=%23393359&txtColor=%23F2F2F2&borderColor=%23121111&fontSize=14&lineHeight=20&padding=10' />
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Replace `YOUR_GITHUB_USERNAME` and `YOUR_REPO_NAME` with the actual repository details.
 
-## Learn More
+## 🚀 Usage
+1. **Visit the website:**  
+   [GitHub Repository Tree Generator](https://githubtree.vercel.app/)
+2. **Enter your GitHub username and repository name.**
+3. **Choose the branch** and **view mode** (folders or files).
+4. **Customize** background color, text color, font size, and spacing.
+5. **Copy the generated URL** and use it anywhere, including **Markdown `img` tags**.
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
